@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LookUp — Dashboard V2 Bento</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #111118;
+  --card: #1c1c27;
+  --card-border: #2a2a3a;
+  --green: #58cc02;
+  --green-dark: #46a302;
+  --green-glow: rgba(88, 204, 2, 0.25);
+  --yellow: #ffc800;
+  --yellow-dark: #e6b400;
+  --orange: #ff9600;
+  --red: #ff4b4b;
+  --blue: #49c0f8;
+  --purple: #ce82ff;
+  --pink: #ff86d0;
+  --text-1: #ffffff;
+  --text-2: #9ca0b0;
+  --text-3: #5a5d6e;
+  --font: 'Nunito', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100dvh;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(17, 17, 24, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--green);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 0 var(--green-dark);
+}
+
+.logo-text {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.header-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.header-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.header-pill.streak { color: var(--orange); border-color: rgba(255,150,0,0.3); }
+.header-pill.gems { color: var(--blue); border-color: rgba(73,192,248,0.3); }
+
+/* ═══ MASCOTTE HERO ═══ */
+.hero {
+  padding: 20px 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.hero-mascot {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--green), #7edb3a);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: 0 6px 0 var(--green-dark), 0 8px 30px var(--green-glow);
+  animation: hero-bounce 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes hero-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.hero-info h2 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+
+.hero-info p {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.hero-level-tag {
+  display: inline-block;
+  background: var(--purple);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 8px;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 0 #a866d6;
+}
+
+/* ═══ XP BAR (style Duolingo) ═══ */
+.xp-section {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.xp-bar-outer {
+  height: 20px;
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.xp-bar-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), #7edb3a);
+  border-radius: 10px;
+  position: relative;
+  animation: xp-grow 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes xp-grow { to { width: 70%; } }
+
+.xp-bar-inner::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  right: 8px;
+  height: 6px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+}
+
+.xp-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.xp-labels .current { color: var(--green); font-family: var(--mono); }
+.xp-labels .target { color: var(--text-3); }
+
+/* ═══ BENTO GRID ═══ */
+.bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.bento-card {
+  border-radius: 20px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: transform 0.15s;
+  cursor: pointer;
+}
+
+.bento-card:active { transform: scale(0.96); }
+
+.bento-card::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  right: 8px;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.08), transparent);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.bento-big { grid-column: span 2; }
+
+.bento-card.green { background: var(--green); border-bottom: 4px solid var(--green-dark); }
+.bento-card.green .bento-val, .bento-card.green .bento-label { color: #fff; }
+
+.bento-card.dark {
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-bottom: 4px solid #16161f;
+}
+
+.bento-card.yellow { background: var(--yellow); border-bottom: 4px solid var(--yellow-dark); }
+.bento-card.yellow .bento-val, .bento-card.yellow .bento-label { color: #3a3000; }
+
+.bento-card.purple-card { background: var(--purple); border-bottom: 4px solid #a866d6; }
+.bento-card.purple-card .bento-val, .bento-card.purple-card .bento-label { color: #fff; }
+
+.bento-emoji {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.bento-val {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-1);
+}
+
+.bento-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+/* CTA inside bento */
+.bento-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bento-cta-text {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.bento-cta-sub {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  margin-top: 2px;
+}
+
+.bento-cta-arrow {
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+/* ═══ DAILY MISSION ═══ */
+.mission-section {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+.mission-card {
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 4px solid #16161f;
+}
+
+.mission-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 0 rgba(230, 150, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.mission-content { flex: 1; }
+
+.mission-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.mission-progress-track {
+  height: 10px;
+  background: #2a2a3a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mission-progress-fill {
+  height: 100%;
+  width: 66%;
+  background: linear-gradient(90deg, var(--yellow), var(--orange));
+  border-radius: 6px;
+  position: relative;
+}
+
+.mission-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 4px; right: 4px; height: 3px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+}
+
+.mission-sub {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.mission-reward {
+  background: var(--yellow);
+  color: #3a3000;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 10px;
+  box-shadow: 0 3px 0 var(--yellow-dark);
+  white-space: nowrap;
+}
+
+/* ═══ HISTORIQUE ═══ */
+.history-section {
+  padding: 0 16px;
+}
+
+.history-item {
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 3px solid #16161f;
+  transition: transform 0.15s;
+  cursor: pointer;
+}
+
+.history-item:active { transform: scale(0.98); }
+
+.h-platform {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.h-platform.yt { background: #ff0033; }
+.h-platform.tt { background: #25f4ee; color: #000; }
+.h-platform.ig { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+.h-platform.web { background: var(--blue); }
+
+.h-content { flex: 1; min-width: 0; }
+
+.h-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.h-meta {
+  font-size: 0.65rem;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.h-score {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.h-score-num {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.h-score-num.high { color: var(--green); }
+.h-score-num.mid { color: var(--yellow); }
+.h-score-num.low { color: var(--red); }
+
+.h-score-bar {
+  width: 40px;
+  height: 5px;
+  background: #2a2a3a;
+  border-radius: 3px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.h-score-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.h-score-bar-fill.high { background: var(--green); }
+.h-score-bar-fill.mid { background: var(--yellow); }
+.h-score-bar-fill.low { background: var(--red); }
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(17, 17, 24, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 2px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  z-index: 200;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-btn .nav-ico { font-size: 1.4rem; }
+.nav-btn .nav-txt {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+.nav-btn.active .nav-txt { color: var(--green); }
+
+.nav-center {
+  width: 52px;
+  height: 52px;
+  background: var(--green);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 0 var(--green-dark), 0 6px 20px var(--green-glow);
+  margin-top: -16px;
+  cursor: pointer;
+  transition: transform 0.12s;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nav-center:active { transform: scale(0.92) translateY(2px); box-shadow: 0 2px 0 var(--green-dark); }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.8) translateY(15px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.bento-card { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.bento-card:nth-child(1) { animation-delay: 0.1s; }
+.bento-card:nth-child(2) { animation-delay: 0.15s; }
+.bento-card:nth-child(3) { animation-delay: 0.2s; }
+.bento-card:nth-child(4) { animation-delay: 0.25s; }
+.bento-card:nth-child(5) { animation-delay: 0.3s; }
+
+.history-item { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.history-item:nth-child(1) { animation-delay: 0.4s; }
+.history-item:nth-child(2) { animation-delay: 0.5s; }
+.history-item:nth-child(3) { animation-delay: 0.6s; }
+.history-item:nth-child(4) { animation-delay: 0.7s; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="logo-area">
+    <div class="logo-icon">🦎</div>
+    <span class="logo-text">LookUp</span>
+  </div>
+  <div class="header-right">
+    <div class="header-pill streak">🔥 7</div>
+    <div class="header-pill gems">💎 340</div>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-mascot">🦎</div>
+  <div class="hero-info">
+    <h2>Salut CaméléonVert ! 👋</h2>
+    <p>Prêt·e à débusquer des fakes ?</p>
+    <span class="hero-level-tag">🎖 Niveau 8 — Détective</span>
+  </div>
+</section>
+
+<!-- ═══ XP BAR ═══ -->
+<section class="xp-section">
+  <div class="xp-bar-outer">
+    <div class="xp-bar-inner"></div>
+  </div>
+  <div class="xp-labels">
+    <span class="current">2 450 XP</span>
+    <span class="target">Niveau 9 → 3 500 XP</span>
+  </div>
+</section>
+
+<!-- ═══ BENTO GRID ═══ -->
+<section class="bento">
+  <!-- CTA -->
+  <div class="bento-card green bento-big">
+    <div class="bento-cta">
+      <div>
+        <div class="bento-cta-text">🔍 Nouvelle analyse</div>
+        <div class="bento-cta-sub">Colle un lien → gagne de l'XP</div>
+      </div>
+      <div class="bento-cta-arrow">→</div>
+    </div>
+  </div>
+  
+  <!-- Stats -->
+  <div class="bento-card dark">
+    <div class="bento-emoji">🕵️</div>
+    <div class="bento-val">23</div>
+    <div class="bento-label">Analyses</div>
+  </div>
+  
+  <div class="bento-card dark">
+    <div class="bento-emoji">🚨</div>
+    <div class="bento-val">4</div>
+    <div class="bento-label">Fakes trouvés</div>
+  </div>
+  
+  <div class="bento-card yellow">
+    <div class="bento-emoji">🎯</div>
+    <div class="bento-val">89%</div>
+    <div class="bento-label">Précision</div>
+  </div>
+  
+  <div class="bento-card purple-card">
+    <div class="bento-emoji">🏆</div>
+    <div class="bento-val">#3</div>
+    <div class="bento-label">Classement</div>
+  </div>
+</section>
+
+<!-- ═══ MISSION DU JOUR ═══ -->
+<section class="mission-section">
+  <div class="section-title">🎯 Mission du jour</div>
+  <div class="mission-card">
+    <div class="mission-icon">⚡</div>
+    <div class="mission-content">
+      <div class="mission-title">Analyse 3 contenus aujourd'hui</div>
+      <div class="mission-progress-track">
+        <div class="mission-progress-fill"></div>
+      </div>
+      <div class="mission-sub">2 / 3 terminés</div>
+    </div>
+    <div class="mission-reward">+100 XP</div>
+  </div>
+</section>
+
+<!-- ═══ HISTORIQUE ═══ -->
+<section class="history-section">
+  <div class="section-title">📋 Récent</div>
+  
+  <div class="history-item">
+    <div class="h-platform yt">▶️</div>
+    <div class="h-content">
+      <div class="h-title">Le réchauffement climatique en 10 min</div>
+      <div class="h-meta">ScienceEtonnante · Hier</div>
+    </div>
+    <div class="h-score">
+      <div class="h-score-num high">88</div>
+      <div class="h-score-bar"><div class="h-score-bar-fill high" style="width:88%"></div></div>
+    </div>
+  </div>
+  
+  <div class="history-item">
+    <div class="h-platform tt">🎵</div>
+    <div class="h-content">
+      <div class="h-title">CETTE technique change TOUT 😱🔥</div>
+      <div class="h-meta">@sante.miracle · Lun.</div>
+    </div>
+    <div class="h-score">
+      <div class="h-score-num mid">40</div>
+      <div class="h-score-bar"><div class="h-score-bar-fill mid" style="width:40%"></div></div>
+    </div>
+  </div>
+  
+  <div class="history-item">
+    <div class="h-platform ig">📸</div>
+    <div class="h-content">
+      <div class="h-title">ON VOUS CACHE LA VÉRITÉ sur les vaccins</div>
+      <div class="h-meta">@verite.cachee.off · Dim.</div>
+    </div>
+    <div class="h-score">
+      <div class="h-score-num low">15</div>
+      <div class="h-score-bar"><div class="h-score-bar-fill low" style="width:15%"></div></div>
+    </div>
+  </div>
+  
+  <div class="history-item">
+    <div class="h-platform web">📰</div>
+    <div class="h-content">
+      <div class="h-title">Rapport GIEC : les points clés du bilan</div>
+      <div class="h-meta">lemonde.fr · Sam.</div>
+    </div>
+    <div class="h-score">
+      <div class="h-score-num high">85</div>
+      <div class="h-score-bar"><div class="h-score-bar-fill high" style="width:85%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOTTOM NAV ═══ -->
+<nav class="bottom-nav">
+  <a class="nav-btn active">
+    <span class="nav-ico">🏠</span>
+    <span class="nav-txt">Accueil</span>
+  </a>
+  <a class="nav-btn">
+    <span class="nav-ico">📊</span>
+    <span class="nav-txt">Rang</span>
+  </a>
+  <a class="nav-center">🔍</a>
+  <a class="nav-btn">
+    <span class="nav-ico">🏆</span>
+    <span class="nav-txt">Badges</span>
+  </a>
+  <a class="nav-btn">
+    <span class="nav-ico">👤</span>
+    <span class="nav-txt">Profil</span>
+  </a>
+</nav>
+
+</body>
+</html>
