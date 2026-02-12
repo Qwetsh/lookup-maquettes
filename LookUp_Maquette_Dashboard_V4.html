@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LookUp — Dashboard V4 BeReal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #faf8f4;
+  --bg-2: #ffffff;
+  --lavender: #e8dff5;
+  --lavender-dark: #c4b0e0;
+  --mint: #d4f5e9;
+  --mint-dark: #6bcca0;
+  --peach: #fde8d8;
+  --peach-dark: #f4a574;
+  --sky: #d5eeff;
+  --sky-dark: #64b5f6;
+  --pink: #fce4ec;
+  --pink-dark: #f06292;
+  --lemon: #fff9c4;
+  --lemon-dark: #ffd54f;
+  --text-1: #1a1a2e;
+  --text-2: #6b6b8d;
+  --text-3: #a8a8c0;
+  --shadow: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 30px rgba(0,0,0,0.1);
+  --font: 'Poppins', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 24px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100dvh;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 248, 244, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-blob {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--mint), var(--mint-dark));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transform: rotate(-5deg);
+  box-shadow: 0 3px 12px rgba(107, 204, 160, 0.3);
+}
+
+.logo-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+
+.h-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.h-pill {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-2);
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+
+.h-pill.streak { color: #e65100; }
+.h-pill.gems { color: #7c4dff; }
+
+/* ═══ HERO ═══ */
+.hero {
+  padding: 20px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--lavender), var(--pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  box-shadow: 0 4px 16px rgba(196, 176, 224, 0.4);
+  animation: avatar-wobble 4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes avatar-wobble {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.hero-text h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.hero-text p {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--lavender);
+  color: #6a3fbf;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+/* ═══ XP ═══ */
+.xp-area {
+  padding: 12px 16px 20px;
+}
+
+.xp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.xp-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.xp-nums {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-3);
+}
+
+.xp-nums strong { color: var(--mint-dark); }
+
+.xp-track {
+  height: 14px;
+  background: #eee8e0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.xp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--mint-dark), #4dd0a1);
+  border-radius: 10px;
+  animation: xp-go 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s;
+  position: relative;
+}
+
+@keyframes xp-go { to { width: 70%; } }
+
+.xp-fill::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 8px; right: 8px; height: 4px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 4px;
+}
+
+/* ═══ STATS BUBBLES ═══ */
+.stats {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.stat-bubble {
+  flex: 1;
+  border-radius: 22px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.stat-bubble:active { transform: scale(0.95); }
+
+.stat-bubble:nth-child(1) { background: var(--peach); }
+.stat-bubble:nth-child(2) { background: var(--pink); }
+.stat-bubble:nth-child(3) { background: var(--sky); }
+
+.stat-emoji { font-size: 1.5rem; margin-bottom: 4px; }
+
+.stat-num {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-1);
+}
+
+.stat-lbl {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ═══ CTA ═══ */
+.cta-area {
+  padding: 0 16px;
+  margin-bottom: 22px;
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--mint-dark), #4dd0a1);
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(107, 204, 160, 0.35);
+  transition: transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-btn:active { transform: scale(0.97); }
+
+.cta-btn::after {
+  content: '🔍';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+}
+
+.cta-sub {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+/* ═══ MISSION ═══ */
+.mission-area {
+  padding: 0 16px;
+  margin-bottom: 22px;
+}
+
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+.mission-card {
+  background: var(--lemon);
+  border-radius: 22px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+
+.mission-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.mission-body { flex: 1; }
+
+.mission-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.mission-prog-track {
+  height: 10px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mission-prog-fill {
+  height: 100%;
+  width: 66%;
+  background: linear-gradient(90deg, var(--lemon-dark), var(--peach-dark));
+  border-radius: 8px;
+  position: relative;
+}
+
+.mission-prog-fill::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 6px; right: 6px; height: 3px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 2px;
+}
+
+.mission-sub {
+  font-size: 0.6rem;
+  color: var(--text-2);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.mission-reward {
+  background: var(--bg-2);
+  border-radius: 14px;
+  padding: 6px 10px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #e65100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  white-space: nowrap;
+}
+
+/* ═══ BADGES SCROLL ═══ */
+.badges-area {
+  margin-bottom: 22px;
+}
+
+.badges-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.badges-scroll::-webkit-scrollbar { display: none; }
+
+.badge {
+  flex: 0 0 auto;
+  width: 80px;
+  text-align: center;
+}
+
+.badge-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+
+.badge-icon:active { transform: scale(0.9) rotate(-5deg); }
+
+.badge.earned .badge-icon { background: var(--bg-2); }
+.badge.locked .badge-icon { background: #eee8e0; opacity: 0.4; filter: grayscale(0.8); }
+
+.badge-name {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--text-2);
+  line-height: 1.2;
+}
+
+.badge.earned .badge-name { color: var(--text-1); }
+
+/* ═══ HISTORIQUE ═══ */
+.history-area {
+  padding: 0 16px;
+}
+
+.history-card {
+  background: var(--bg-2);
+  border-radius: 20px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s;
+  cursor: pointer;
+}
+
+.history-card:active { transform: scale(0.98); }
+
+.h-plat {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.h-plat.yt { background: #ffcdd2; }
+.h-plat.tt { background: #b2dfdb; }
+.h-plat.ig { background: var(--lavender); }
+.h-plat.web { background: var(--sky); }
+
+.h-body { flex: 1; min-width: 0; }
+
+.h-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.h-meta {
+  font-size: 0.62rem;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.h-score-pill {
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.h-score-pill.high { background: var(--mint); color: #2e7d55; }
+.h-score-pill.mid { background: var(--lemon); color: #a07800; }
+.h-score-pill.low { background: #ffcdd2; color: #c62828; }
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(250, 248, 244, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid #e8e4de;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 0;
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  z-index: 200;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-btn .n-ico { font-size: 1.4rem; }
+.nav-btn .n-txt {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.nav-btn.active .n-txt { color: var(--mint-dark); }
+
+.nav-center {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, var(--mint-dark), #4dd0a1);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-top: -18px;
+  box-shadow: 0 6px 20px rgba(107, 204, 160, 0.35);
+  cursor: pointer;
+  transition: transform 0.12s;
+  text-decoration: none;
+  color: #fff;
+  transform: rotate(-3deg);
+}
+
+.nav-center:active { transform: scale(0.9) rotate(0deg); }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.stat-bubble { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.stat-bubble:nth-child(1) { animation-delay: 0.1s; }
+.stat-bubble:nth-child(2) { animation-delay: 0.18s; }
+.stat-bubble:nth-child(3) { animation-delay: 0.26s; }
+
+.history-card { animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.history-card:nth-child(2) { animation-delay: 0.35s; }
+.history-card:nth-child(3) { animation-delay: 0.42s; }
+.history-card:nth-child(4) { animation-delay: 0.49s; }
+.history-card:nth-child(5) { animation-delay: 0.56s; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-blob">🦎</div>
+    <span class="logo-name">LookUp</span>
+  </div>
+  <div class="h-pills">
+    <div class="h-pill streak">🔥 7</div>
+    <div class="h-pill gems">💎 340</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-avatar">🦎</div>
+  <div class="hero-text">
+    <h2>Hey CaméléonVert ! 🌿</h2>
+    <p>On démonte des fakes aujourd'hui ?</p>
+    <span class="hero-badge">✨ Niveau 8 — Détective</span>
+  </div>
+</section>
+
+<section class="xp-area">
+  <div class="xp-row">
+    <span class="xp-label">Progression</span>
+    <span class="xp-nums"><strong>2 450</strong> / 3 500 XP</span>
+  </div>
+  <div class="xp-track"><div class="xp-fill"></div></div>
+</section>
+
+<section class="stats">
+  <div class="stat-bubble">
+    <div class="stat-emoji">🕵️</div>
+    <div class="stat-num">23</div>
+    <div class="stat-lbl">Analyses</div>
+  </div>
+  <div class="stat-bubble">
+    <div class="stat-emoji">🚨</div>
+    <div class="stat-num">4</div>
+    <div class="stat-lbl">Fakes</div>
+  </div>
+  <div class="stat-bubble">
+    <div class="stat-emoji">🎯</div>
+    <div class="stat-num">89%</div>
+    <div class="stat-lbl">Précision</div>
+  </div>
+</section>
+
+<section class="cta-area">
+  <button class="cta-btn">Analyser un contenu</button>
+  <p class="cta-sub">Colle un lien TikTok, Insta ou YouTube</p>
+</section>
+
+<section class="mission-area">
+  <div class="section-label">🎯 Mission du jour</div>
+  <div class="mission-card">
+    <div class="mission-icon">⚡</div>
+    <div class="mission-body">
+      <div class="mission-title">3 analyses aujourd'hui</div>
+      <div class="mission-prog-track"><div class="mission-prog-fill"></div></div>
+      <div class="mission-sub">2 / 3 terminés</div>
+    </div>
+    <div class="mission-reward">+100 XP</div>
+  </div>
+</section>
+
+<section class="badges-area">
+  <div class="section-label" style="padding: 0 16px;">🏆 Badges</div>
+  <div class="badges-scroll">
+    <div class="badge earned"><div class="badge-icon">🔰</div><div class="badge-name">Premier pas</div></div>
+    <div class="badge earned"><div class="badge-icon">🕵️</div><div class="badge-name">Enquêteur</div></div>
+    <div class="badge earned"><div class="badge-icon">🛡️</div><div class="badge-name">Chasseur</div></div>
+    <div class="badge earned"><div class="badge-icon">⚡</div><div class="badge-name">Streak x7</div></div>
+    <div class="badge locked"><div class="badge-icon">👑</div><div class="badge-name">Maître</div></div>
+    <div class="badge locked"><div class="badge-icon">🌟</div><div class="badge-name">Légende</div></div>
+  </div>
+</section>
+
+<section class="history-area">
+  <div class="section-label">📋 Récent</div>
+  <div class="history-card">
+    <div class="h-plat yt">▶️</div>
+    <div class="h-body">
+      <div class="h-title">Le réchauffement climatique en 10 min</div>
+      <div class="h-meta">ScienceEtonnante · Hier</div>
+    </div>
+    <div class="h-score-pill high">88</div>
+  </div>
+  <div class="history-card">
+    <div class="h-plat tt">🎵</div>
+    <div class="h-body">
+      <div class="h-title">CETTE technique change TOUT 😱🔥</div>
+      <div class="h-meta">@sante.miracle · Lun.</div>
+    </div>
+    <div class="h-score-pill mid">40</div>
+  </div>
+  <div class="history-card">
+    <div class="h-plat ig">📸</div>
+    <div class="h-body">
+      <div class="h-title">ON VOUS CACHE LA VÉRITÉ sur les vaccins</div>
+      <div class="h-meta">@verite.cachee.off · Dim.</div>
+    </div>
+    <div class="h-score-pill low">15</div>
+  </div>
+  <div class="history-card">
+    <div class="h-plat web">📰</div>
+    <div class="h-body">
+      <div class="h-title">Rapport GIEC : les points clés du bilan</div>
+      <div class="h-meta">lemonde.fr · Sam.</div>
+    </div>
+    <div class="h-score-pill high">85</div>
+  </div>
+</section>
+
+<nav class="bottom-nav">
+  <a class="nav-btn active"><span class="n-ico">🏠</span><span class="n-txt">Accueil</span></a>
+  <a class="nav-btn"><span class="n-ico">📊</span><span class="n-txt">Rang</span></a>
+  <a class="nav-center">🔍</a>
+  <a class="nav-btn"><span class="n-ico">🏆</span><span class="n-txt">Badges</span></a>
+  <a class="nav-btn"><span class="n-ico">👤</span><span class="n-txt">Profil</span></a>
+</nav>
+
+</body>
+</html>

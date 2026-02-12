@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LookUp — Dashboard V5 Wrapped</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #000000;
+  --card: #111111;
+  --grad-coral: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  --grad-violet: linear-gradient(135deg, #a55eea, #6c5ce7);
+  --grad-teal: linear-gradient(135deg, #00d2d3, #01a3a4);
+  --grad-pink: linear-gradient(135deg, #fd79a8, #e84393);
+  --grad-gold: linear-gradient(135deg, #fdcb6e, #f0932b);
+  --grad-lime: linear-gradient(135deg, #00b894, #55efc4);
+  --text-1: #ffffff;
+  --text-2: #888888;
+  --text-3: #444444;
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --display: 'Unbounded', cursive;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100dvh;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.h-right {
+  display: flex;
+  gap: 8px;
+}
+
+.h-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1px solid #222;
+}
+
+/* ═══ HERO CARD (big gradient) ═══ */
+.hero-card {
+  margin: 8px 16px 16px;
+  border-radius: 24px;
+  padding: 28px 22px;
+  background: var(--grad-violet);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 150px;
+  height: 150px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 50%;
+}
+
+.hero-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-emoji {
+  font-size: 3.2rem;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+.hero-info h2 {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.hero-info p {
+  font-size: 0.78rem;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.hero-level {
+  font-family: var(--display);
+  font-size: 0.55rem;
+  background: rgba(255,255,255,0.2);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 10px;
+  margin-top: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+}
+
+.hero-xp {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-xp-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+.xp-track {
+  height: 8px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  width: 0%;
+  background: rgba(255,255,255,0.85);
+  border-radius: 6px;
+  animation: xp-go 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.4s;
+}
+
+@keyframes xp-go { to { width: 70%; } }
+
+/* ═══ STATS — BIG NUMBERS ═══ */
+.stats-row {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  flex: 1;
+  border-radius: 20px;
+  padding: 18px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:nth-child(1) { background: var(--grad-coral); }
+.stat-card:nth-child(2) { background: var(--grad-teal); }
+.stat-card:nth-child(3) { background: var(--grad-gold); }
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -30%;
+  width: 80px;
+  height: 80px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+}
+
+.stat-num {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-lbl {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══ CTA ═══ */
+.cta-area {
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 20px;
+  background: var(--text-1);
+  border: none;
+  border-radius: 50px;
+  color: #000;
+  font-family: var(--display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s;
+  letter-spacing: -0.3px;
+}
+
+.cta-btn:active { transform: scale(0.97); }
+
+.cta-sub {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-3);
+  margin-top: 8px;
+}
+
+/* ═══ MISSION ═══ */
+.mission-area {
+  padding: 0 16px;
+  margin-bottom: 22px;
+}
+
+.section-label {
+  font-family: var(--display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--text-2);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.mission-card {
+  background: var(--card);
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mission-grad {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--grad-pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.mission-body { flex: 1; }
+
+.mission-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.mission-track {
+  height: 6px;
+  background: #222;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mission-fill {
+  height: 100%;
+  width: 66%;
+  background: var(--grad-pink);
+  border-radius: 4px;
+}
+
+.mission-sub {
+  font-size: 0.6rem;
+  color: var(--text-3);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.mission-reward {
+  font-family: var(--display);
+  font-size: 0.6rem;
+  color: var(--text-1);
+  background: #222;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ═══ HISTORIQUE — STACKED CARDS ═══ */
+.history-area {
+  padding: 0 16px;
+}
+
+.history-card {
+  background: var(--card);
+  border: 1px solid #1a1a1a;
+  border-radius: 20px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.15s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-card:active { transform: scale(0.98); }
+
+/* Color accent left */
+.history-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+}
+
+.history-card.s-high::before { background: var(--grad-lime); }
+.history-card.s-mid::before { background: var(--grad-gold); }
+.history-card.s-low::before { background: var(--grad-coral); }
+
+.hc-plat {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.hc-plat.yt { background: linear-gradient(135deg, #ff4444, #cc0000); }
+.hc-plat.tt { background: linear-gradient(135deg, #00f2ea, #ff0050); }
+.hc-plat.ig { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+.hc-plat.web { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+.hc-body { flex: 1; min-width: 0; }
+
+.hc-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hc-meta {
+  font-size: 0.6rem;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.hc-score {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.hc-score-num {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hc-score-num.high { color: #55efc4; }
+.hc-score-num.mid { color: #fdcb6e; }
+.hc-score-num.low { color: #ff6b6b; }
+
+.hc-score-tag {
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.hc-score-tag.high { color: #00b894; }
+.hc-score-tag.mid { color: #f0932b; }
+.hc-score-tag.low { color: #ee5a24; }
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  z-index: 200;
+}
+
+.nb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nb .nb-ico { font-size: 1.3rem; }
+.nb .nb-txt {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nb.active .nb-txt { color: var(--text-1); }
+
+.nb-center {
+  width: 52px;
+  height: 52px;
+  background: var(--text-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-top: -16px;
+  cursor: pointer;
+  transition: transform 0.12s;
+  text-decoration: none;
+  color: #000;
+  border: 3px solid var(--bg);
+}
+
+.nb-center:active { transform: scale(0.9); }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-card { animation: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; }
+.stat-card { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.stat-card:nth-child(1) { animation-delay: 0.15s; }
+.stat-card:nth-child(2) { animation-delay: 0.22s; }
+.stat-card:nth-child(3) { animation-delay: 0.29s; }
+.cta-area { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.35s; }
+.history-card { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.history-card:nth-child(2) { animation-delay: 0.45s; }
+.history-card:nth-child(3) { animation-delay: 0.52s; }
+.history-card:nth-child(4) { animation-delay: 0.59s; }
+.history-card:nth-child(5) { animation-delay: 0.66s; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">LookUp</div>
+  <div class="h-right">
+    <span class="h-chip">🔥 7</span>
+    <span class="h-chip">💎 340</span>
+  </div>
+</header>
+
+<section class="hero-card">
+  <div class="hero-top">
+    <div class="hero-emoji">🦎</div>
+    <div class="hero-info">
+      <h2>CaméléonVert</h2>
+      <p>Prêt·e à scroller malin ?</p>
+      <span class="hero-level">🎖 Niveau 8 — Détective</span>
+    </div>
+  </div>
+  <div class="hero-xp">
+    <div class="hero-xp-row">
+      <span>2 450 XP</span>
+      <span>3 500 XP</span>
+    </div>
+    <div class="xp-track"><div class="xp-fill"></div></div>
+  </div>
+</section>
+
+<section class="stats-row">
+  <div class="stat-card">
+    <div class="stat-num">23</div>
+    <div class="stat-lbl">Scans</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">4</div>
+    <div class="stat-lbl">Fakes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">89%</div>
+    <div class="stat-lbl">Précision</div>
+  </div>
+</section>
+
+<section class="cta-area">
+  <button class="cta-btn">🔍  Analyser un contenu</button>
+  <p class="cta-sub">Colle un lien TikTok, Insta ou YouTube</p>
+</section>
+
+<section class="mission-area">
+  <div class="section-label">⚡ Mission du jour</div>
+  <div class="mission-card">
+    <div class="mission-grad">🎯</div>
+    <div class="mission-body">
+      <div class="mission-title">3 analyses aujourd'hui</div>
+      <div class="mission-track"><div class="mission-fill"></div></div>
+      <div class="mission-sub">2 / 3 terminés</div>
+    </div>
+    <div class="mission-reward">+100 XP</div>
+  </div>
+</section>
+
+<section class="history-area">
+  <div class="section-label">📋 Historique</div>
+  
+  <div class="history-card s-high">
+    <div class="hc-plat yt">▶️</div>
+    <div class="hc-body">
+      <div class="hc-title">Le réchauffement climatique en 10 min</div>
+      <div class="hc-meta">ScienceEtonnante · YouTube · Hier</div>
+    </div>
+    <div class="hc-score">
+      <div class="hc-score-num high">88</div>
+      <div class="hc-score-tag high">Fiable</div>
+    </div>
+  </div>
+
+  <div class="history-card s-mid">
+    <div class="hc-plat tt">🎵</div>
+    <div class="hc-body">
+      <div class="hc-title">CETTE technique change TOUT 😱🔥</div>
+      <div class="hc-meta">@sante.miracle · TikTok · Lun.</div>
+    </div>
+    <div class="hc-score">
+      <div class="hc-score-num mid">40</div>
+      <div class="hc-score-tag mid">Douteux</div>
+    </div>
+  </div>
+
+  <div class="history-card s-low">
+    <div class="hc-plat ig">📸</div>
+    <div class="hc-body">
+      <div class="hc-title">ON VOUS CACHE LA VÉRITÉ sur les vaccins</div>
+      <div class="hc-meta">@verite.cachee.off · Instagram · Dim.</div>
+    </div>
+    <div class="hc-score">
+      <div class="hc-score-num low">15</div>
+      <div class="hc-score-tag low">Fake</div>
+    </div>
+  </div>
+
+  <div class="history-card s-high">
+    <div class="hc-plat web">📰</div>
+    <div class="hc-body">
+      <div class="hc-title">Rapport GIEC : les points clés du bilan</div>
+      <div class="hc-meta">lemonde.fr · Article · Sam.</div>
+    </div>
+    <div class="hc-score">
+      <div class="hc-score-num high">85</div>
+      <div class="hc-score-tag high">Fiable</div>
+    </div>
+  </div>
+</section>
+
+<nav class="bottom-nav">
+  <a class="nb active"><span class="nb-ico">🏠</span><span class="nb-txt">Home</span></a>
+  <a class="nb"><span class="nb-ico">📊</span><span class="nb-txt">Rang</span></a>
+  <a class="nb-center">🔍</a>
+  <a class="nb"><span class="nb-ico">🏆</span><span class="nb-txt">Badges</span></a>
+  <a class="nb"><span class="nb-ico">👤</span><span class="nb-txt">Profil</span></a>
+</nav>
+
+</body>
+</html>

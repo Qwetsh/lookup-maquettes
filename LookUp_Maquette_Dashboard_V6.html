@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LookUp — Dashboard V6 Arcade</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #0a0a0a;
+  --bg-2: #141414;
+  --green: #39ff14;
+  --cyan: #00ffff;
+  --magenta: #ff00ff;
+  --yellow: #ffff00;
+  --red: #ff0040;
+  --orange: #ff8800;
+  --blue: #4444ff;
+  --text-1: #ffffff;
+  --text-2: #888888;
+  --text-3: #444444;
+  --pixel: 'Press Start 2P', monospace;
+  --retro: 'VT323', monospace;
+  --px: 3px;
+}
+
+body {
+  font-family: var(--retro);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100dvh;
+  padding-bottom: 85px;
+  overflow-x: hidden;
+  image-rendering: pixelated;
+}
+
+/* Scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Pixel border helper */
+.pixel-border {
+  border: var(--px) solid;
+  box-shadow:
+    var(--px) var(--px) 0 0 currentColor,
+    calc(var(--px) * -1) calc(var(--px) * -1) 0 0 currentColor,
+    var(--px) calc(var(--px) * -1) 0 0 currentColor,
+    calc(var(--px) * -1) var(--px) 0 0 currentColor;
+}
+
+/* ═══ HEADER ═══ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: var(--px) solid var(--green);
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--pixel);
+  font-size: 0.7rem;
+  color: var(--green);
+  text-shadow: 0 0 10px var(--green), 0 0 20px rgba(57,255,20,0.3);
+  letter-spacing: 1px;
+}
+
+.h-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.h-tag {
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  padding: 4px 6px;
+  border: 2px solid;
+}
+
+.h-tag.streak {
+  color: var(--orange);
+  border-color: var(--orange);
+  text-shadow: 0 0 6px var(--orange);
+}
+
+.h-tag.rank {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan);
+}
+
+/* ═══ PLAYER HUD ═══ */
+.hud {
+  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 2px dashed var(--text-3);
+  margin-bottom: 16px;
+}
+
+.hud-avatar {
+  width: 64px;
+  height: 64px;
+  border: var(--px) solid var(--green);
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  position: relative;
+  box-shadow:
+    var(--px) var(--px) 0 0 var(--green),
+    inset 0 0 20px rgba(57,255,20,0.1);
+}
+
+.hud-avatar::after {
+  content: 'LV.8';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  background: var(--green);
+  color: #000;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.hud-info { flex: 1; }
+
+.hud-name {
+  font-family: var(--pixel);
+  font-size: 0.6rem;
+  color: var(--green);
+  margin-bottom: 4px;
+  text-shadow: 0 0 6px var(--green);
+}
+
+.hud-class {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--cyan);
+  margin-bottom: 8px;
+  text-shadow: 0 0 4px var(--cyan);
+}
+
+/* HP-style XP bar */
+.hp-bar {
+  position: relative;
+}
+
+.hp-label {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--yellow);
+  margin-bottom: 3px;
+}
+
+.hp-track {
+  height: 16px;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  position: relative;
+  animation: hp-grow 1s steps(20) forwards 0.5s;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3);
+}
+
+@keyframes hp-grow { to { width: 70%; } }
+
+.hp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* ═══ STATS — ARCADE SCORE ═══ */
+.score-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+.score-cell {
+  border: 2px solid;
+  padding: 12px 8px;
+  text-align: center;
+  position: relative;
+  background: var(--bg-2);
+}
+
+.score-cell:nth-child(1) { border-color: var(--green); }
+.score-cell:nth-child(2) { border-color: var(--red); }
+.score-cell:nth-child(3) { border-color: var(--cyan); }
+
+.score-cell::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--pixel);
+  font-size: 0.35rem;
+  background: var(--bg);
+  padding: 0 4px;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.score-cell:nth-child(1)::before { color: var(--green); }
+.score-cell:nth-child(2)::before { color: var(--red); }
+.score-cell:nth-child(3)::before { color: var(--cyan); }
+
+.score-val {
+  font-family: var(--pixel);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.score-cell:nth-child(1) .score-val { color: var(--green); text-shadow: 0 0 10px var(--green); }
+.score-cell:nth-child(2) .score-val { color: var(--red); text-shadow: 0 0 10px var(--red); }
+.score-cell:nth-child(3) .score-val { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+/* ═══ CTA ═══ */
+.cta-area {
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 16px 12px;
+  background: var(--bg-2);
+  border: var(--px) solid var(--green);
+  color: var(--green);
+  font-family: var(--pixel);
+  font-size: 0.6rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px var(--green);
+  box-shadow: 
+    var(--px) var(--px) 0 0 var(--green),
+    0 0 20px rgba(57,255,20,0.15);
+  transition: all 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-btn:active {
+  transform: translate(var(--px), var(--px));
+  box-shadow: 0 0 20px rgba(57,255,20,0.3);
+}
+
+.cta-btn::after {
+  content: '▶';
+  position: absolute;
+  right: 12px;
+  animation: blink-cursor 0.8s steps(1) infinite;
+}
+
+@keyframes blink-cursor { 50% { opacity: 0; } }
+
+.cta-sub {
+  font-family: var(--retro);
+  font-size: 0.85rem;
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ═══ QUEST ═══ */
+.quest-area {
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+.quest-label {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--yellow);
+  text-shadow: 0 0 6px var(--yellow);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.quest-card {
+  border: 2px solid var(--yellow);
+  background: var(--bg-2);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quest-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  animation: quest-flash 2s ease-in-out infinite;
+}
+
+@keyframes quest-flash {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.5); }
+}
+
+.quest-body { flex: 1; }
+
+.quest-title {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+.quest-prog-track {
+  height: 10px;
+  background: #1a1a1a;
+  border: 2px solid #333;
+  overflow: hidden;
+}
+
+.quest-prog-fill {
+  height: 100%;
+  width: 66%;
+  background: var(--yellow);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.3);
+}
+
+.quest-sub {
+  font-family: var(--pixel);
+  font-size: 0.35rem;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.quest-reward {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--yellow);
+  border: 2px solid var(--yellow);
+  padding: 4px 6px;
+  text-shadow: 0 0 4px var(--yellow);
+  white-space: nowrap;
+}
+
+/* ═══ BADGES — PIXEL ICONS ═══ */
+.badges-area {
+  margin-bottom: 16px;
+}
+
+.badges-label {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--magenta);
+  text-shadow: 0 0 6px var(--magenta);
+  padding: 0 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.badges-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.badges-scroll::-webkit-scrollbar { display: none; }
+
+.badge-px {
+  flex: 0 0 auto;
+  width: 68px;
+  text-align: center;
+}
+
+.badge-px-icon {
+  width: 52px;
+  height: 52px;
+  border: 2px solid;
+  margin: 0 auto 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--bg-2);
+}
+
+.badge-px.earned .badge-px-icon {
+  border-color: var(--magenta);
+  box-shadow: 0 0 10px rgba(255,0,255,0.3);
+}
+
+.badge-px.locked .badge-px-icon {
+  border-color: var(--text-3);
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+.badge-px-name {
+  font-family: var(--pixel);
+  font-size: 0.3rem;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.badge-px.earned .badge-px-name { color: var(--magenta); text-shadow: 0 0 4px var(--magenta); }
+
+/* ═══ HISTORY — LOG STYLE ═══ */
+.log-area {
+  padding: 0 12px;
+}
+
+.log-label {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.log-item {
+  border: 2px solid var(--text-3);
+  background: var(--bg-2);
+  padding: 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.log-item:active { border-color: var(--cyan); }
+
+.log-item.s-high { border-left: 4px solid var(--green); }
+.log-item.s-mid { border-left: 4px solid var(--yellow); }
+.log-item.s-low { border-left: 4px solid var(--red); }
+
+.log-plat {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+}
+
+.log-body { flex: 1; min-width: 0; }
+
+.log-title {
+  font-family: var(--retro);
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-meta {
+  font-family: var(--pixel);
+  font-size: 0.3rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.log-score {
+  font-family: var(--pixel);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.log-score.high { color: var(--green); text-shadow: 0 0 8px var(--green); }
+.log-score.mid { color: var(--yellow); text-shadow: 0 0 8px var(--yellow); }
+.log-score.low { color: var(--red); text-shadow: 0 0 8px var(--red); }
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border-top: var(--px) solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 0;
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  z-index: 200;
+}
+
+.nv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nv .nv-ico { font-size: 1.2rem; }
+.nv .nv-txt {
+  font-family: var(--pixel);
+  font-size: 0.3rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nv.active .nv-txt { color: var(--green); text-shadow: 0 0 4px var(--green); }
+
+.nv-center {
+  width: 48px;
+  height: 48px;
+  border: var(--px) solid var(--green);
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-top: -18px;
+  box-shadow: var(--px) var(--px) 0 0 var(--green), 0 0 15px rgba(57,255,20,0.2);
+  cursor: pointer;
+  transition: all 0.1s;
+  text-decoration: none;
+  color: var(--green);
+}
+
+.nv-center:active {
+  transform: translate(var(--px), var(--px));
+  box-shadow: 0 0 15px rgba(57,255,20,0.4);
+}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.score-cell { animation: appear 0.3s steps(1) both; }
+.score-cell:nth-child(1) { animation-delay: 0.2s; }
+.score-cell:nth-child(2) { animation-delay: 0.4s; }
+.score-cell:nth-child(3) { animation-delay: 0.6s; }
+
+.log-item { animation: appear 0.2s steps(1) both; }
+.log-item:nth-child(2) { animation-delay: 0.7s; }
+.log-item:nth-child(3) { animation-delay: 0.8s; }
+.log-item:nth-child(4) { animation-delay: 0.9s; }
+.log-item:nth-child(5) { animation-delay: 1.0s; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">LOOK UP</div>
+  <div class="h-tags">
+    <span class="h-tag streak">🔥7</span>
+    <span class="h-tag rank">#3</span>
+  </div>
+</header>
+
+<section class="hud">
+  <div class="hud-avatar">🦎</div>
+  <div class="hud-info">
+    <div class="hud-name">CaméléonVert</div>
+    <div class="hud-class">▸ DETECTIVE ▸ 4eB</div>
+    <div class="hp-bar">
+      <div class="hp-label">▸ EXP</div>
+      <div class="hp-track">
+        <div class="hp-fill"></div>
+        <div class="hp-text">2450 / 3500 XP</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="score-board">
+  <div class="score-cell" data-label="SCANS"><div class="score-val">23</div></div>
+  <div class="score-cell" data-label="FAKES"><div class="score-val">04</div></div>
+  <div class="score-cell" data-label="ACCURACY"><div class="score-val">89%</div></div>
+</section>
+
+<section class="cta-area">
+  <button class="cta-btn">INSERT URL TO SCAN</button>
+  <p class="cta-sub">TikTok · Instagram · YouTube · Article</p>
+</section>
+
+<section class="quest-area">
+  <div class="quest-label">⚡ QUEST</div>
+  <div class="quest-card">
+    <div class="quest-icon">🎯</div>
+    <div class="quest-body">
+      <div class="quest-title">SCAN 3 CONTENTS TODAY</div>
+      <div class="quest-prog-track"><div class="quest-prog-fill"></div></div>
+      <div class="quest-sub">2/3 DONE</div>
+    </div>
+    <div class="quest-reward">+100XP</div>
+  </div>
+</section>
+
+<section class="badges-area">
+  <div class="badges-label">🏆 BADGES</div>
+  <div class="badges-scroll">
+    <div class="badge-px earned"><div class="badge-px-icon">🔰</div><div class="badge-px-name">RECRUE</div></div>
+    <div class="badge-px earned"><div class="badge-px-icon">🕵️</div><div class="badge-px-name">ENQUÊTEUR</div></div>
+    <div class="badge-px earned"><div class="badge-px-icon">🛡️</div><div class="badge-px-name">CHASSEUR</div></div>
+    <div class="badge-px earned"><div class="badge-px-icon">⚡</div><div class="badge-px-name">STREAK</div></div>
+    <div class="badge-px locked"><div class="badge-px-icon">👑</div><div class="badge-px-name">MAÎTRE</div></div>
+    <div class="badge-px locked"><div class="badge-px-icon">🌟</div><div class="badge-px-name">LÉGENDE</div></div>
+  </div>
+</section>
+
+<section class="log-area">
+  <div class="log-label">📋 SCAN LOG</div>
+  
+  <div class="log-item s-high">
+    <div class="log-plat">▶️</div>
+    <div class="log-body">
+      <div class="log-title">Le réchauffement climatique en 10 min</div>
+      <div class="log-meta">SCIENCEETONNANTE · YT · HIER</div>
+    </div>
+    <div class="log-score high">088</div>
+  </div>
+
+  <div class="log-item s-mid">
+    <div class="log-plat">🎵</div>
+    <div class="log-body">
+      <div class="log-title">CETTE technique change TOUT 😱🔥</div>
+      <div class="log-meta">@SANTE.MIRACLE · TT · LUN</div>
+    </div>
+    <div class="log-score mid">040</div>
+  </div>
+
+  <div class="log-item s-low">
+    <div class="log-plat">📸</div>
+    <div class="log-body">
+      <div class="log-title">ON VOUS CACHE LA VÉRITÉ</div>
+      <div class="log-meta">@VERITE.CACHEE · IG · DIM</div>
+    </div>
+    <div class="log-score low">015</div>
+  </div>
+
+  <div class="log-item s-high">
+    <div class="log-plat">📰</div>
+    <div class="log-body">
+      <div class="log-title">Rapport GIEC : les points clés</div>
+      <div class="log-meta">LEMONDE.FR · WEB · SAM</div>
+    </div>
+    <div class="log-score high">085</div>
+  </div>
+</section>
+
+<nav class="bottom-nav">
+  <a class="nv active"><span class="nv-ico">🏠</span><span class="nv-txt">BASE</span></a>
+  <a class="nv"><span class="nv-ico">📊</span><span class="nv-txt">RANG</span></a>
+  <a class="nv-center">🔍</a>
+  <a class="nv"><span class="nv-ico">🏆</span><span class="nv-txt">LOOT</span></a>
+  <a class="nv"><span class="nv-ico">👤</span><span class="nv-txt">STATS</span></a>
+</nav>
+
+</body>
+</html>
